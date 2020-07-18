@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">AppleADay</string>
+    <string name="title">Apple A Day</string>
+    <string name="subtitle">An Everyday Health Tracker</string>
+    <string name="start">Get Started</string>
+    <string name="info">Looking for information about COVID-19?\n Click here!</string>
+    <string name="help">\?</string>
+    <string name="findLocation">Find a COVID-19 testing location near you.</string>
+    <string name="link1">CDC Symptoms of COVID-19</string>
+    <string name="link2">WHO Advice for the public</string>
+    <string name="hospital">Nearby Hospitals</string>
+</resources>
