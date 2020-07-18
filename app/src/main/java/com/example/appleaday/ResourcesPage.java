@@ -151,7 +151,7 @@ public class ResourcesPage extends AppCompatActivity
 
         //initialize places
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), "AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
+            Places.initialize(getApplicationContext(), "** API KEY **");
         }
         placesClient = Places.createClient(this);
         final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
@@ -588,7 +588,7 @@ public class ResourcesPage extends AppCompatActivity
             stringBuilder.append("location=" + String.valueOf(lat) + "," + String.valueOf(lng));
             stringBuilder.append("&radius=5000");
             stringBuilder.append("&type=hospital");
-            stringBuilder.append("&key=AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
+            stringBuilder.append("&key=**API KEY**");
 
             String url = stringBuilder.toString();
             Object dataTransfer[] = new Object[2];
