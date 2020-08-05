@@ -1,6 +1,8 @@
 package com.example.appleaday;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,10 +18,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.TextView;
 
 public class SymptomPage extends AppCompatActivity {
 
-    int date;
     ListView listView;
     MainListViewAdapter adapter;
     Button editSympts;
@@ -36,12 +38,15 @@ public class SymptomPage extends AppCompatActivity {
     SQLiteDatabase db;
     boolean submitted = false;
     static String day = "";
+    TextView date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.symptom_layout);
-        getSymptoms();
+        //getSymptoms();
+        date = (TextView) findViewById(R.id.date);
+
 
         try {
             submitted = getIntent().getExtras().getBoolean("changed");
@@ -50,11 +55,14 @@ public class SymptomPage extends AppCompatActivity {
             System.out.println("no intent");
         }
 
+
+
         try {
             String[] toParse = getIntent().getExtras().getString("date").split(" ");
             System.out.println("got date string");
-            day = toParse[1] + toParse[2] + toParse[5];
+            day = toParse[1] + " " + toParse[2] + " " + toParse[5];
             System.out.println(day);
+            date.setText(day);
         } catch (Exception e) {
             System.out.println("no date");
         }
@@ -62,7 +70,7 @@ public class SymptomPage extends AppCompatActivity {
         System.out.println("started onCreate");
 
 
-        db = openOrCreateDatabase("Database", MODE_PRIVATE, null);
+        db = openOrCreateDatabase("Database1", MODE_PRIVATE, null);
         //db.execSQL("DROP TABLE APPLE");
         db.execSQL("CREATE TABLE IF NOT EXISTS APPLE (Date String PRIMARY KEY," +
                 " Symptoms String, Comments String, Severity Integer);");
@@ -118,7 +126,7 @@ public class SymptomPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 commentsString = comments.getText().toString();
-                //closeKeyboard();
+                closeKeyboard();
                 System.out.println(commentsString);
             }
         });
@@ -230,11 +238,18 @@ public class SymptomPage extends AppCompatActivity {
     private void openSelectSymptomsActivity() {
         commentsString = comments.getText().toString();
         Intent intent = new Intent(this, SelectSymptoms.class);
+
+
+        intent.putExtra("date", date.getText());
+        System.out.println(date.getText());
         intent.putStringArrayListExtra("symptoms", SelectSymptoms.selectedSympts);
-        startActivity(intent);
+        //startActivity(intent);
+
+
+        startActivityForResult(intent, 1);
     }
 
-    private void getSymptoms(){
+   /*private void getSymptoms(){
         if (SelectSymptoms.selectedSympts.size() != 0){
             return;
         }
@@ -252,6 +267,44 @@ public class SymptomPage extends AppCompatActivity {
             }
         }
     }
+
+    */
+
+
+
+
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if(requestCode==1)
+        {
+            if (SelectSymptoms.selectedSympts.size() != 0){
+                return;
+            }
+            List<String> items;
+            items = Arrays.asList(getResources().getStringArray(R.array.symptomArray));
+            Intent intent = getIntent();
+            if (intent != null){
+                items = intent.getStringArrayListExtra("symptoms");
+            }
+
+            if (items != null){
+                for (String item : items){
+                    SelectSymptoms.selectedSympts.add(item);
+                    System.out.println(item);
+                }
+            }
+        }
+    }
+
+
+
+
 
     private void submit(){
         commentsString = comments.getText().toString();
@@ -271,6 +324,8 @@ public class SymptomPage extends AppCompatActivity {
         while(c.moveToNext()) {
             System.out.println(c.getString(0));
         }
+        c.close();
+        db.close();
 
         Intent intent = new Intent(this, CalendarPage.class);
         startActivity(intent);

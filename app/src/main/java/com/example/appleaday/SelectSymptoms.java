@@ -1,6 +1,8 @@
 package com.example.appleaday;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +21,8 @@ public class SelectSymptoms extends AppCompatActivity {
     ListViewAdapter adapter;
     ArrayList<String> symptoms = new ArrayList<>();
     Button submit;
+    String date;
+
 
     public static ArrayList<String> selectedSympts = new ArrayList<>();
 
@@ -32,7 +36,11 @@ public class SelectSymptoms extends AppCompatActivity {
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         adapter = new ListViewAdapter(symptoms, this);
         listView.setAdapter(adapter);
-
+        try {
+            date = getIntent().getExtras().getString("date");
+        } catch (Exception e) {
+            System.out.println("no date");
+        }
 
         submit = findViewById(R.id.submitSympts);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -41,14 +49,20 @@ public class SelectSymptoms extends AppCompatActivity {
                 sendSelectedSympts();
             }
         });
+
+
     }
 
     private void sendSelectedSympts(){
         Intent intent = new Intent(this, SymptomPage.class);
+        intent.setFlags(0);
         intent.putStringArrayListExtra("symptoms", selectedSympts);
         intent.putExtra("changed", true);
+        intent.putExtra("date", date);
         for (String x : selectedSympts) System.out.println(x);
-        startActivity(intent);
+        setResult(RESULT_OK, intent);
+        finish();
+        //startActivity(intent);
     }
 
     private void getSymptoms(){
