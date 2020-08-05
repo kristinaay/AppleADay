@@ -68,17 +68,14 @@ public class CalendarPage extends AppCompatActivity {
         final ColorDrawable lightgreen = new ColorDrawable(getResources().getColor(R.color.lightgreen));
         final ColorDrawable green = new ColorDrawable(getResources().getColor(R.color.green));
 
-        SharedPreferences sharedPref = CalendarPage.this.getPreferences(Context.MODE_PRIVATE);
-        final SharedPreferences.Editor editor = sharedPref.edit();
-
 
         final CaldroidListener listener = new CaldroidListener() {
             @Override
             public void onSelectDate(Date date, View view) {
 
-                editor.putString("currentDate", date.toString());
-                editor.apply();
+
                 Intent myIntent = new Intent(CalendarPage.this, SymptomPage.class);
+                myIntent.putExtra("date", date.toString());
                 startActivity(myIntent);
 
                 caldroidFragment.setBackgroundDrawableForDate(red, date);
