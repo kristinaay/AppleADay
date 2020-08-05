@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.icu.text.Collator;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -21,6 +22,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -100,7 +102,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ResourcesPage extends AppCompatActivity
         implements OnMapReadyCallback {
-        //GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+    //GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mGoogleMap;
     private MapFragment mapFrag;
@@ -125,6 +127,7 @@ public class ResourcesPage extends AppCompatActivity
     private final static int REQUEST_CHECK_SETTINGS_GPS = 0x1;
     private final static int REQUEST_ID_MULTIPLE_PERMISSION = 0x2;
     private Button hospitals;
+    private Button testing;
     private Location mylocation;
     private LocationManager locationManager;
 
@@ -135,8 +138,8 @@ public class ResourcesPage extends AppCompatActivity
         setContentView(R.layout.resources_page);
 
         hospitals = (Button) findViewById(R.id.hospitals);
-
-
+        testing = (Button) findViewById(R.id.testing);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -151,7 +154,7 @@ public class ResourcesPage extends AppCompatActivity
 
         //initialize places
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), "** API KEY **");
+            Places.initialize(getApplicationContext(), "AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
         }
         placesClient = Places.createClient(this);
         final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
@@ -302,19 +305,23 @@ public class ResourcesPage extends AppCompatActivity
             }
         });
 
+        testing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setContentView(R.layout.web_layout);
+                webView = (WebView) findViewById(R.id.web_holder);
+                webView.setWebViewClient(new WebViewClient());
+                webView.loadUrl("https://www.arcgis.com/apps/webappviewer/index.html?id=2ec47819f57c40598a4eaf45bf9e0d16");
+                webSettings = webView.getSettings();
+                webSettings.setJavaScriptEnabled(true);
+                webSettings.setSupportZoom(true);
+            }
+        });
+
         //setUpGClient();
 
 
     }
-
-    /*private void setUpGClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, 0, ResourcesPage.this)
-                .addConnectionCallbacks(this).addOnConnectionFailedListener(this).addApi(LocationServices.API).build();
-        mGoogleApiClient.connect();
-    }
-
-     */
 
 
     protected void search(List<Address> addresses) {
@@ -423,7 +430,14 @@ public class ResourcesPage extends AppCompatActivity
                         getNearbyHospitals(currentLat, currentLng);
                     }
                 });
+               /* testing.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getNearbyTesting(currentLat, currentLng);
+                    }
+                });
 
+                */
 
 
                 //move map camera
@@ -530,7 +544,7 @@ public class ResourcesPage extends AppCompatActivity
                     // functionality that depends on this permission.
                     Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
                 }
-                return;
+
             }
 
             // other 'case' lines to check for other
@@ -550,6 +564,12 @@ public class ResourcesPage extends AppCompatActivity
     }
 
     private void getDeviceLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
+            return;
+        }
         mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
@@ -575,6 +595,12 @@ public class ResourcesPage extends AppCompatActivity
                             }
 
                         };
+                        if (ActivityCompat.checkSelfPermission(ResourcesPage.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(ResourcesPage.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(ResourcesPage.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST_LOCATION);
+                            return;
+                        }
                         mFusedLocationClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
 
                     }
@@ -586,9 +612,9 @@ public class ResourcesPage extends AppCompatActivity
         private void getNearbyHospitals(double lat, double lng) {
             StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
             stringBuilder.append("location=" + String.valueOf(lat) + "," + String.valueOf(lng));
-            stringBuilder.append("&radius=5000");
+            stringBuilder.append("&radius=10000");
             stringBuilder.append("&type=hospital");
-            stringBuilder.append("&key=**API KEY**");
+            stringBuilder.append("&key=AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
 
             String url = stringBuilder.toString();
             Object dataTransfer[] = new Object[2];
@@ -598,5 +624,26 @@ public class ResourcesPage extends AppCompatActivity
             GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
             getNearbyPlaces.execute(dataTransfer);
         }
+
+    /*private void getNearbyTesting(double lat, double lng) {
+        StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        stringBuilder.append("location=" + String.valueOf(lat) + "," + String.valueOf(lng));
+        stringBuilder.append("&radius=10000");
+        stringBuilder.append("&name=cvs");
+        stringBuilder.append("&key=AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
+
+        String url = stringBuilder.toString();
+        Object dataTransfer[] = new Object[2];
+        dataTransfer[0] = mGoogleMap;
+        dataTransfer[1] = url;
+
+        GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
+        getNearbyPlaces.execute(dataTransfer);
+
+
+
+    }
+
+     */
 
 }

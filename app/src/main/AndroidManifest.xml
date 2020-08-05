@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme">
         <meta-data
         android:name="com.google.android.geo.API_KEY"
-        android:value=**API KEY**
+        android:value="AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko"
         />
         <meta-data
             android:name="com.google.android.gms.version"
@@ -40,7 +40,12 @@
 
         <activity android:name=".ResourcesPage"
         android:parentActivityName=".CalendarPage"/>
-
+        <activity android:name=".SelectSymptoms"
+            android:parentActivityName=".SymptomPage">
+        </activity>
+        <activity android:name=".SymptomPage"
+            android:parentActivityName=".CalendarPage">
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"
