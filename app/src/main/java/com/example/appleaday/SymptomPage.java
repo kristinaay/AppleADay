@@ -35,6 +35,7 @@ public class SymptomPage extends AppCompatActivity {
     public static String commentsString = "";
     SQLiteDatabase db;
     boolean submitted = false;
+    static String day = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,35 +45,32 @@ public class SymptomPage extends AppCompatActivity {
 
         try {
             submitted = getIntent().getExtras().getBoolean("changed");
+            System.out.println("Submitted: " + submitted);
         } catch (Exception e){
             System.out.println("no intent");
         }
 
         try {
-            date = Integer.parseInt(getIntent().getExtras().getString("dateString"));
-            System.out.println(date);
+            String[] toParse = getIntent().getExtras().getString("date").split(" ");
+            System.out.println("got date string");
+            day = toParse[1] + toParse[2] + toParse[5];
+            System.out.println(day);
         } catch (Exception e) {
             System.out.println("no date");
         }
 
         System.out.println("started onCreate");
 
-        listView = findViewById(R.id.mListView);
-        adapter = new MainListViewAdapter(SelectSymptoms.selectedSympts, SymptomPage.this);
-        if(listView!=null) {
-            listView.setAdapter(adapter);
-        }
 
         db = openOrCreateDatabase("Database", MODE_PRIVATE, null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS APPLE (Date Integer PRIMARY KEY," +
+        //db.execSQL("DROP TABLE APPLE");
+        db.execSQL("CREATE TABLE IF NOT EXISTS APPLE (Date String PRIMARY KEY," +
                 " Symptoms String, Comments String, Severity Integer);");
         // db.execSQL("Delete from APPLE"); //use to delete all tuples in case of error
-        // get date from intent
-        date = 0;
         if (!submitted){
             try {
                 System.out.println("trying"); // query db for record for appropriate date
-                Cursor c = db.rawQuery("Select * from APPLE WHERE Date = '" + date + "'", null);
+                Cursor c = db.rawQuery("Select * from APPLE WHERE Date = '" + day + "'", null);
                 System.out.println("got cursor");
                 if (c != null && c.getCount() > 0){ // check if record exists
                     System.out.println("got tuple");
@@ -86,12 +84,23 @@ public class SymptomPage extends AppCompatActivity {
                         if (!SelectSymptoms.selectedSympts.contains(x)){
                             SelectSymptoms.selectedSympts.add(x);
                         }
-                    } adapter.notifyDataSetChanged();
-                    c.close();
+                    }
+                } else {
+                    System.out.println("else");
+                    SelectSymptoms.selectedSympts.clear();
+                    commentsString = "";
+                    colorChoiceInt = 0;
                 }
+                c.close();
             } catch (Exception e) {
                 System.out.println("Error occured when connecting to db");
             }
+        }
+
+        listView = findViewById(R.id.mListView);
+        adapter = new MainListViewAdapter(SelectSymptoms.selectedSympts, SymptomPage.this);
+        if(listView!=null) {
+            listView.setAdapter(adapter);
         }
 
         editSympts = findViewById(R.id.editSymptoms);
@@ -247,6 +256,7 @@ public class SymptomPage extends AppCompatActivity {
     private void submit(){
         commentsString = comments.getText().toString();
         String symptomsString = "";
+        System.out.println("Day: " + day);
         for (String s : SelectSymptoms.selectedSympts) {
             System.out.println(s);
             symptomsString += s + ",";
@@ -256,15 +266,13 @@ public class SymptomPage extends AppCompatActivity {
             symptomsString = symptomsString.substring(0, symptomsString.length() - 1);
         System.out.println(commentsString);
         System.out.println(colorChoiceInt);
-        int date = 0;
-        db.execSQL("REPLACE into APPLE values('" + date + "', '" + symptomsString + "', '" + commentsString + "', '" + colorChoiceInt + "')");
+        db.execSQL("REPLACE into APPLE values('" + day + "', '" + symptomsString + "', '" + commentsString + "', '" + colorChoiceInt + "')");
         Cursor c = db.rawQuery("Select * from APPLE", null);
         while(c.moveToNext()) {
-            System.out.println(c.getString(1));
+            System.out.println(c.getString(0));
         }
 
-        Intent intent = new Intent(this, MainActivity.class);
-        // add data to the db
-        // create intent to go back to main activity
+        Intent intent = new Intent(this, CalendarPage.class);
+        startActivity(intent);
     }
 }
