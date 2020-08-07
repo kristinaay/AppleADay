@@ -327,7 +327,12 @@ public class SymptomPage extends AppCompatActivity {
         c.close();
         db.close();
 
+
         Intent intent = new Intent(this, CalendarPage.class);
-        startActivity(intent);
+        intent.putExtra("date", day);
+        intent.putExtra("color", colorChoiceInt);
+        setResult(2, intent);
+        finish();
+        //startActivity(intent);
     }
 }

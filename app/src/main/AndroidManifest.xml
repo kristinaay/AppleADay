@@ -36,7 +36,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".CalendarPage"
-        android:parentActivityName=".MainActivity" />
+        android:parentActivityName=".MainActivity"
+           />
 
         <activity android:name=".ResourcesPage"
         android:parentActivityName=".CalendarPage"/>
