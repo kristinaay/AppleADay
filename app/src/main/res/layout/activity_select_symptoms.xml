@@ -5,7 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SelectSymptoms"
-    android:background="@drawable/lily">
+   >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".7"
+        android:background="@drawable/lily"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/submitSympts"

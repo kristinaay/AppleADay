@@ -147,7 +147,7 @@ public class CalendarPage extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
 
-            if (data.hasExtra("date")) {
+            try {
                 Bundle extras = data.getExtras();
                 String dateString = extras.getString("date");
                 SimpleDateFormat format = new SimpleDateFormat("MMM dd yyyy");
@@ -167,7 +167,7 @@ public class CalendarPage extends AppCompatActivity {
 
 
                 caldroidFragment.refreshView();
-            } else {
+            } catch (Exception e) {
                 System.out.println("No data.");
             }
 
