@@ -78,14 +78,11 @@ public class SymptomPage extends AppCompatActivity {
         //db.execSQL("Delete from APPLE"); //use to delete all tuples in case of error
         if (!submitted){
             try {
-                System.out.println("trying"); // query db for record for appropriate date
                 Cursor c = db.rawQuery("Select * from APPLE WHERE Date = '" + day + "'", null);
-                System.out.println("got cursor");
                 if (c != null && c.getCount() > 0){ // check if record exists\
-                    System.out.println("got tuple");
                     c.moveToNext();
+                    SelectSymptoms.selectedSympts.clear();
                     String symptomsString = c.getString(1);
-                    System.out.println("Symptom String: " + symptomsString);
                     commentsString = c.getString(2);
                     colorChoiceInt = c.getInt(3);
                     String[] symptomsArray = symptomsString.split(",");
@@ -98,7 +95,6 @@ public class SymptomPage extends AppCompatActivity {
                         SelectSymptoms.selectedSympts.remove("");
                     }
                 } else {
-                    System.out.println("else");
                     SelectSymptoms.selectedSympts.clear();
                     commentsString = "";
                     colorChoiceInt = 0;
@@ -131,7 +127,6 @@ public class SymptomPage extends AppCompatActivity {
             public void onClick(View v) {
                 commentsString = comments.getText().toString();
                 closeKeyboard();
-                System.out.println(commentsString);
             }
         });
 
@@ -250,7 +245,6 @@ public class SymptomPage extends AppCompatActivity {
 
 
         intent.putExtra("date", date.getText());
-        System.out.println(date.getText());
         intent.putStringArrayListExtra("symptoms", SelectSymptoms.selectedSympts);
         startActivityForResult(intent, 1);
     }
@@ -276,7 +270,6 @@ public class SymptomPage extends AppCompatActivity {
             if (items != null){
                 for (String item : items){
                     SelectSymptoms.selectedSympts.add(item);
-                    System.out.println(item);
                 }
             }
         }
@@ -285,22 +278,13 @@ public class SymptomPage extends AppCompatActivity {
     private void submit(){
         commentsString = comments.getText().toString();
         String symptomsString = "";
-        System.out.println("Day: " + day);
         for (String s : SelectSymptoms.selectedSympts) {
-            System.out.println(s);
             symptomsString += s + ",";
         }
         symptomsString.trim();
         if (!symptomsString.equals(""))
             symptomsString = symptomsString.substring(0, symptomsString.length() - 1);
-        System.out.println(commentsString);
-        System.out.println(colorChoiceInt);
         db.execSQL("REPLACE into APPLE values('" + day + "', '" + symptomsString + "', '" + commentsString + "', '" + colorChoiceInt + "')");
-        Cursor c = db.rawQuery("Select * from APPLE", null);
-        while(c.moveToNext()) {
-            System.out.println(c.getString(0));
-        }
-        c.close();
         db.close();
 
 
@@ -309,6 +293,5 @@ public class SymptomPage extends AppCompatActivity {
         intent.putExtra("color", colorChoiceInt);
         setResult(2, intent);
         finish();
-        //startActivity(intent);
     }
 }
