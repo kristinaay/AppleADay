@@ -75,7 +75,7 @@ public class SymptomPage extends AppCompatActivity {
         db = openOrCreateDatabase("Database1", MODE_PRIVATE, null);
         db.execSQL("CREATE TABLE IF NOT EXISTS APPLE (Date String PRIMARY KEY," +
                 " Symptoms String, Comments String, Severity Integer);");
-         //db.execSQL("Delete from APPLE"); //use to delete all tuples in case of error
+        //db.execSQL("Delete from APPLE"); //use to delete all tuples in case of error
         if (!submitted){
             try {
                 System.out.println("trying"); // query db for record for appropriate date
@@ -281,7 +281,7 @@ public class SymptomPage extends AppCompatActivity {
             }
         }
     }
-    
+
     private void submit(){
         commentsString = comments.getText().toString();
         String symptomsString = "";

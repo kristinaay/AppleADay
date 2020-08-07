@@ -104,12 +104,14 @@ public class CalendarPage extends AppCompatActivity {
                     else if (color == 5) caldroidFragment.setBackgroundDrawableForDate(green, date);
 
                 }
+                c.close();
+
             }
-        } catch (Exception e) {
+        }  catch (Exception e) {
             System.out.println("Error retrieving data");
         }
 
-
+        db.close();
 
 
 
@@ -167,6 +169,7 @@ public class CalendarPage extends AppCompatActivity {
 
 
                 caldroidFragment.refreshView();
+
             } catch (Exception e) {
                 System.out.println("No data.");
             }
