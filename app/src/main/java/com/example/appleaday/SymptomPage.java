@@ -44,9 +44,11 @@ public class SymptomPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.symptom_layout);
-        //getSymptoms();
         date = (TextView) findViewById(R.id.date);
 
+        System.out.println("starting");
+        for (String x : SelectSymptoms.selectedSympts)
+            System.out.println(x);
 
         try {
             submitted = getIntent().getExtras().getBoolean("changed");
@@ -71,16 +73,15 @@ public class SymptomPage extends AppCompatActivity {
 
 
         db = openOrCreateDatabase("Database1", MODE_PRIVATE, null);
-        //db.execSQL("DROP TABLE APPLE");
         db.execSQL("CREATE TABLE IF NOT EXISTS APPLE (Date String PRIMARY KEY," +
                 " Symptoms String, Comments String, Severity Integer);");
-        // db.execSQL("Delete from APPLE"); //use to delete all tuples in case of error
+         //db.execSQL("Delete from APPLE"); //use to delete all tuples in case of error
         if (!submitted){
             try {
                 System.out.println("trying"); // query db for record for appropriate date
                 Cursor c = db.rawQuery("Select * from APPLE WHERE Date = '" + day + "'", null);
                 System.out.println("got cursor");
-                if (c != null && c.getCount() > 0){ // check if record exists
+                if (c != null && c.getCount() > 0){ // check if record exists\
                     System.out.println("got tuple");
                     c.moveToNext();
                     String symptomsString = c.getString(1);
@@ -92,6 +93,9 @@ public class SymptomPage extends AppCompatActivity {
                         if (!SelectSymptoms.selectedSympts.contains(x)){
                             SelectSymptoms.selectedSympts.add(x);
                         }
+                    }
+                    if (SelectSymptoms.selectedSympts.contains("")){
+                        SelectSymptoms.selectedSympts.remove("");
                     }
                 } else {
                     System.out.println("else");
@@ -205,6 +209,11 @@ public class SymptomPage extends AppCompatActivity {
         }
     }
 
+    public void onResume() {
+        adapter.notifyDataSetChanged();
+        super.onResume();
+    }
+
     private void colorSelected(ImageButton choice, ImageButton[] colors){
         for (ImageButton color : colors){
             color.setSelected(false);
@@ -243,37 +252,8 @@ public class SymptomPage extends AppCompatActivity {
         intent.putExtra("date", date.getText());
         System.out.println(date.getText());
         intent.putStringArrayListExtra("symptoms", SelectSymptoms.selectedSympts);
-        //startActivity(intent);
-
-
         startActivityForResult(intent, 1);
     }
-
-   /*private void getSymptoms(){
-        if (SelectSymptoms.selectedSympts.size() != 0){
-            return;
-        }
-        List<String> items = new ArrayList<>();
-        items = Arrays.asList(getResources().getStringArray(R.array.symptomArray));
-        Intent intent = getIntent();
-        if (intent != null){
-            items = intent.getStringArrayListExtra("symptoms");
-        }
-
-        if (items != null){
-            for (String item : items){
-                SelectSymptoms.selectedSympts.add(item);
-                System.out.println(item);
-            }
-        }
-    }
-
-    */
-
-
-
-
-
 
 
     @Override
@@ -301,11 +281,7 @@ public class SymptomPage extends AppCompatActivity {
             }
         }
     }
-
-
-
-
-
+    
     private void submit(){
         commentsString = comments.getText().toString();
         String symptomsString = "";
