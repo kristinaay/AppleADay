@@ -1,17 +1,13 @@
-package com.example.appleaday;
+package com.kristinaandalex.appleaday;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.appleaday.ListViewAdapter;
-import com.example.appleaday.MainActivity;
-import com.example.appleaday.R;
 
 import java.util.ArrayList;
 

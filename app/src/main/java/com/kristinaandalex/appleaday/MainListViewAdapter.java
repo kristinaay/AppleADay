@@ -1,4 +1,4 @@
-package com.example.appleaday;
+package com.kristinaandalex.appleaday;
 
 import android.app.Activity;
 import android.content.Context;

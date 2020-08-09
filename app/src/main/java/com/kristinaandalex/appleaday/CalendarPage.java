@@ -1,7 +1,6 @@
-package com.example.appleaday;
+package com.kristinaandalex.appleaday;
 
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -122,12 +121,9 @@ public class CalendarPage extends AppCompatActivity {
 
                 Intent myIntent = new Intent(CalendarPage.this, SymptomPage.class);
                 myIntent.putExtra("date", date.toString());
-                //startActivity(myIntent);
                 startActivityForResult(myIntent, 2);
 
 
-                //caldroidFragment.setBackgroundDrawableForDate(red, date);
-                //caldroidFragment.refreshView();
             }
         };
 

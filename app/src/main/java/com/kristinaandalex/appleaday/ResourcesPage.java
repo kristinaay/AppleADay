@@ -1,13 +1,11 @@
-package com.example.appleaday;
+package com.kristinaandalex.appleaday;
 
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Address;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -23,8 +21,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,7 +31,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -83,27 +78,19 @@ public class ResourcesPage extends AppCompatActivity
     private LocationRequest mLocationRequest;
     private Location mLastLocation;
     private Marker mCurrLocationMarker;
-    //current location
     private FusedLocationProviderClient mFusedLocationClient;
-    //loading suggestions
     private PlacesClient placesClient;
     private List<AutocompletePrediction> predictions;
     private MaterialSearchBar materialSearchBar;
     private Button link1;
     private Button link2;
-    private ImageButton button;
     private WebView webView;
-    private EditText searchText;
     private WebSettings webSettings;
-    private GoogleApiClient mGoogleApiClient;
     private double currentLat;
     private double currentLng;
-    private final static int REQUEST_CHECK_SETTINGS_GPS = 0x1;
-    private final static int REQUEST_ID_MULTIPLE_PERMISSION = 0x2;
     private Button hospitals;
     private Button testing;
-    private Location mylocation;
-    private LocationManager locationManager;
+
 
 
     //@Override
@@ -292,36 +279,10 @@ public class ResourcesPage extends AppCompatActivity
             }
         });
 
-        //setUpGClient();
 
 
     }
 
-
-    protected void search(List<Address> addresses) {
-
-        Address address = (Address) addresses.get(0);
-        double home_long = address.getLongitude();
-        double home_lat = address.getLatitude();
-        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-
-        String addressText = String.format(
-                "%s, %s",
-                address.getMaxAddressLineIndex() > 0 ? address
-                        .getAddressLine(0) : "", address.getCountryName());
-
-        MarkerOptions markerOptions = new MarkerOptions();
-
-        markerOptions.position(latLng);
-        markerOptions.title(addressText);
-
-        mGoogleMap.clear();
-        mGoogleMap.addMarker(markerOptions);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-
-    }
 
     @Override
     public void onPause() {
@@ -404,14 +365,6 @@ public class ResourcesPage extends AppCompatActivity
                         getNearbyHospitals(currentLat, currentLng);
                     }
                 });
-               /* testing.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getNearbyTesting(currentLat, currentLng);
-                    }
-                });
-
-                */
 
 
                 //move map camera
@@ -511,15 +464,12 @@ public class ResourcesPage extends AppCompatActivity
 
                 } else {
 
-                    // permission denied, boo! Disable the
+                    // permission denied! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show();
                 }
 
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -584,7 +534,7 @@ public class ResourcesPage extends AppCompatActivity
 
         private void getNearbyHospitals(double lat, double lng) {
             StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-            stringBuilder.append("location=" + String.valueOf(lat) + "," + String.valueOf(lng));
+            stringBuilder.append("location=" + lat + "," + lng);
             stringBuilder.append("&radius=10000");
             stringBuilder.append("&type=hospital");
             stringBuilder.append("&key=AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
@@ -598,25 +548,5 @@ public class ResourcesPage extends AppCompatActivity
             getNearbyPlaces.execute(dataTransfer);
         }
 
-    /*private void getNearbyTesting(double lat, double lng) {
-        StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        stringBuilder.append("location=" + String.valueOf(lat) + "," + String.valueOf(lng));
-        stringBuilder.append("&radius=10000");
-        stringBuilder.append("&name=cvs");
-        stringBuilder.append("&key=AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
-
-        String url = stringBuilder.toString();
-        Object dataTransfer[] = new Object[2];
-        dataTransfer[0] = mGoogleMap;
-        dataTransfer[1] = url;
-
-        GetNearbyPlaces getNearbyPlaces = new GetNearbyPlaces();
-        getNearbyPlaces.execute(dataTransfer);
-
-
-
-    }
-
-     */
 
 }
