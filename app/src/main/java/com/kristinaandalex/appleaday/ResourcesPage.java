@@ -115,7 +115,7 @@ public class ResourcesPage extends AppCompatActivity
 
         //initialize places
         if (!Places.isInitialized()) {
-            Places.initialize(getApplicationContext(), "AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
+            Places.initialize(getApplicationContext(), "INSERT_API_KEY_HERE");
         }
         placesClient = Places.createClient(this);
         final AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
