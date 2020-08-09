@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme">
         <meta-data
         android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko"
+        android:value="INSERT_API_KEY_HERE"
         />
         <meta-data
             android:name="com.google.android.gms.version"
