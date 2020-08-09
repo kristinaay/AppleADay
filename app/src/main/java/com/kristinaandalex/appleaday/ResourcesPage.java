@@ -537,7 +537,7 @@ public class ResourcesPage extends AppCompatActivity
             stringBuilder.append("location=" + lat + "," + lng);
             stringBuilder.append("&radius=10000");
             stringBuilder.append("&type=hospital");
-            stringBuilder.append("&key=AIzaSyD-XB1ySqjv1MsvsmrbKSheT1LyZ4LC_Ko");
+            stringBuilder.append("&key=INSERT_API_KEY_HERE");
 
             String url = stringBuilder.toString();
             Object dataTransfer[] = new Object[2];
